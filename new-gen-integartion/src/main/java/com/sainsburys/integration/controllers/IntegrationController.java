@@ -37,11 +37,24 @@ public class IntegrationController {
     @RequestMapping(value="/processOrders" ,method = RequestMethod.GET)
    	public String processOrders() {
     	System.out.println("processOrders inside controller");
-    	List<Order> orders = readOrderService.readOrdersFromFile();
+    	String csvFile = "/Users/dharma.mittapalli/Documents/integration/new-gen-integration/new-gen-integartion/orders/orders.txt";
+		
+    	List<Order> orders = readOrderService.processFilesFromFileServer(csvFile);
     	for(Order order :orders) {
     		service.postItemsToMessageBus(order);
     	}
        	return "OK";
+   	}
+    
+    @RequestMapping(value="/getOrders" ,method = RequestMethod.GET)
+   	public List<Order> getOrders() {
+    	System.out.println("processOrders inside controller");
+    	List<Order> orders =null;
+    	orders =readOrderService.getOrders();
+    	if (!orders.isEmpty())
+    		return orders;
+    	else
+    		return null;
    	}
     
 }
