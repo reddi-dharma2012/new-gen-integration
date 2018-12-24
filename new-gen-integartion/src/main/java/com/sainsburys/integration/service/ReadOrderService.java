@@ -20,7 +20,6 @@ public class ReadOrderService {
 	
 	public final String dateFormat="dd/mm/yyyy";
 	public List<Order> processFilesFromFileServer(String filepath) {
-		String csvFile = "/Users/dharma.mittapalli/Documents/integration/new-gen-integration/new-gen-integartion/orders/orders.txt";
 		String line = "";
 		String cvsSplitBy = ",";
 		List<Order> orders = new ArrayList<Order>();

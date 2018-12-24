@@ -56,5 +56,10 @@ public class IntegrationController {
     	else
     		return null;
    	}
+    @RequestMapping(value="/test" ,method = RequestMethod.GET)
+   	public String test() {
+    	System.out.println("test inside controller");
+    	return "OK-test success";
+   	}
     
 }

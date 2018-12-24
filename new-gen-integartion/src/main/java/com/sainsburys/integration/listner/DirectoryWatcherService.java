@@ -75,8 +75,8 @@ public class DirectoryWatcherService implements InitializingBean, DisposableBean
 	@Override
 	public void destroy() throws Exception {
 		System.out.println("Killing  the Directory Watch service");
-		if (key != null)
-			key.cancel();
+//		if (key != null)
+//			key.cancel();
 
 	}
 }
