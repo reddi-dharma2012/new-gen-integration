@@ -50,7 +50,7 @@ public class DirectoryWatcherService implements InitializingBean, DisposableBean
 				for (WatchEvent<?> event : key.pollEvents()) {
 					System.out.println("Event" + event.kind() + ". File affected: " + event.context() + ".");
 					if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-						System.out.println("Event" + event.kind() );
+						System.out.println("Event" + event.kind());
 						List<Order> orders = readOrderService
 								.processFilesFromFileServer(directoryPath + "/" + event.context());
 						for (Order order : orders) {
