@@ -1,4 +1,4 @@
-package com.sainsburys.integration.listner;
+package com.sainsburys.integration.adaptor;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -9,24 +9,40 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
+import org.springframework.stereotype.Component;
+
 
 import com.sainsburys.integration.models.Order;
-import com.sainsburys.integration.service.MessageProducerService;
-import com.sainsburys.integration.service.ReadOrderService;
+import com.sainsburys.integration.adaptor.ReadOrderService;
+import com.sainsburys.integration.facade.PublisherService;
 
-@Service
-public class DirectoryWatcherService implements InitializingBean, DisposableBean {
+@Component
+public class DirectoryWatcherService implements InitializingBean{
 
 	@Autowired
 	public ReadOrderService readOrderService;
 	@Autowired
-	public MessageProducerService service;
+	public PublisherService service;
 	private WatchKey key;
+	
+	 @Override
+	 public void afterPropertiesSet() throws Exception {
+	        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(13);
+	        scheduler.scheduleAtFixedRate(new Runnable() {
+	            @Override
+	            public void run() {
+	                System.out.println("Hello from scheduler");  
+	                pollFileServer();
+	            }
+		}, 0, 5, TimeUnit.SECONDS);
+	    }
 
 	public void pollFileServer() {
 		String directoryPath = "/Users/dharma.mittapalli/Documents/fileserver";
@@ -49,6 +65,7 @@ public class DirectoryWatcherService implements InitializingBean, DisposableBean
 			while ((key = watchService.take()) != null) {
 				for (WatchEvent<?> event : key.pollEvents()) {
 					System.out.println("Event" + event.kind() + ". File affected: " + event.context() + ".");
+				    System.out.println(StandardWatchEventKinds.ENTRY_CREATE);
 					if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
 						System.out.println("Event" + event.kind());
 						List<Order> orders = readOrderService
@@ -66,17 +83,4 @@ public class DirectoryWatcherService implements InitializingBean, DisposableBean
 
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		System.out.println("Initializing the Directory Watch service");
-		pollFileServer();
-	}
-
-	@Override
-	public void destroy() throws Exception {
-		System.out.println("Killing  the Directory Watch service");
-//		if (key != null)
-//			key.cancel();
-
-	}
 }
