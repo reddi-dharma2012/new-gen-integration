@@ -10,18 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sainsburys.integration.consumer.Receiver;
+import com.sainsburys.integration.adaptor.ReadOrderService;
+import com.sainsburys.integration.facade.PublisherService;
 import com.sainsburys.integration.models.Order;
-import com.sainsburys.integration.service.*;
-
-
 
 
 @RestController
 public class IntegrationController {
 	 private static final Logger LOG = LoggerFactory.getLogger(IntegrationController.class);
 	@Autowired
-	public MessageProducerService service;
+	public PublisherService service;
 	@Autowired
 	public ReadOrderService readOrderService;
 	
@@ -56,10 +54,6 @@ public class IntegrationController {
     	else
     		return null;
    	}
-    @RequestMapping(value="/test" ,method = RequestMethod.GET)
-   	public String test() {
-    	System.out.println("test inside controller");
-    	return "OK-test success";
-   	}
+  
     
 }

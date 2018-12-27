@@ -12,9 +12,9 @@ import com.sainsburys.integration.models.Order;
 
 
 @Service
-public class Receiver {
+public class ConsumerService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Receiver.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConsumerService.class);
     @Autowired
     public OrderDAOImpl orderDAOImpl;
 

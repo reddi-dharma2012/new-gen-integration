@@ -1,4 +1,4 @@
-package com.sainsburys.integration.service;
+package com.sainsburys.integration.facade;
 
 import java.util.Properties;
 
@@ -12,13 +12,12 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sainsburys.integration.controllers.IntegrationController;
 import com.sainsburys.integration.models.Order;
 import com.sainsburys.integration.utility.CustomSerializer;
 
 @Service
-public class MessageProducerService {
-	 private static final Logger LOG = LoggerFactory.getLogger(MessageProducerService.class);
+public class PublisherService {
+	 private static final Logger LOG = LoggerFactory.getLogger(PublisherService.class);
 	public final String TOPIC_NAME = "test";
 
 	public void postItemsToMessageBus(Order order) {
@@ -42,7 +41,6 @@ public class MessageProducerService {
 			if (producer != null)
 				producer.close();
 		}
-		
 		
 	}
 }

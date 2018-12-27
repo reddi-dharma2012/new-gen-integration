@@ -98,7 +98,7 @@ public class Order implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Order [orderId=" + orderId + ", quantity=" + quantity + ", shipmentDate=" + shipmentDate
+		return "Order [orderId=" + orderId + ", quantity=" + quantity + ", shipmentDate=" + ""
 				+ ", vehicleId=" + vehicleId + ", supplierId=" + supplierId + ", supplierName=" + supplierName
 				+ ", productId=" + productId + ", productName=" + productName + ", depotId=" + depotId + ", channel="
 				+ channel + "]";

@@ -1,4 +1,4 @@
-package com.sainsburys.integration.service;
+package com.sainsburys.integration.adaptor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,7 +32,7 @@ public class ReadOrderService {
 				String[] order_info = line.split(cvsSplitBy);
 			    order.setOrderId(Integer.parseInt(order_info[0]));
 			    order.setQuantity(Integer.parseInt(order_info[1]));
-			    order.setShipmentDate(new StringToSqlDateConverter(dateFormat).convert(order_info[2]));
+			    //order.setShipmentDate(new StringToSqlDateConverter(dateFormat).convert(order_info[2]));
 			    //order.setShipmentDate(order_info[2]);
 			    order.setVehicleId(Integer.parseInt(order_info[3]));
 			    order.setSupplierId(order_info[4]);

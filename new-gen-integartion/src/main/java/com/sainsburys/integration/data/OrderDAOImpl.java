@@ -37,7 +37,7 @@ public class OrderDAOImpl {
 		        Order order = new Order(); 
 		        order.setOrderId(rs.getInt("order_id"));
 				order.setQuantity(rs.getInt("quantity"));
-				order.setShipmentDate(rs.getDate("shipment_date"));
+				//order.setShipmentDate(rs.getDate("shipment_date"));
 				order.setVehicleId(rs.getInt("vehicle_id"));
 				order.setSupplierId(rs.getString("supplier_id"));
 				order.setSupplierName(rs.getString("supplier_name"));
@@ -60,7 +60,7 @@ public class OrderDAOImpl {
 				PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
 				ps.setInt(1, order.getOrderId());
 				ps.setInt(2, order.getQuantity());
-				ps.setDate(3, order.getShipmentDate());
+				ps.setDate(3, null);
 				//ps.setString(3, order.getShipmentDate());
 				ps.setInt(4, order.getVehicleId());
 				ps.setString(5, order.getSupplierId());
