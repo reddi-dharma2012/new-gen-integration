@@ -12,7 +12,9 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sainsburys.integration.models.AdviceMessage;
 import com.sainsburys.integration.models.Order;
+import com.sainsburys.integration.utility.AdviceMessageSerializer;
 import com.sainsburys.integration.utility.CustomSerializer;
 
 @Service
@@ -33,6 +35,29 @@ public class PublisherService {
 			producer = new KafkaProducer<String, Order>(props);
 			ProducerCallback callback = new ProducerCallback();
 			ProducerRecord<String, Order> data = new ProducerRecord<String, Order>(TOPIC_NAME, "KEY", order);
+			producer.send(data, callback);
+		} catch (Exception exp) {
+			LOG.error(exp.getMessage());
+			System.out.println(exp.getMessage());
+		} finally {
+			if (producer != null)
+				producer.close();
+		}
+		
+	}
+	public void postShipmentsToMessageBus(AdviceMessage order) {
+		Producer<String, AdviceMessage> producer = null;
+		Properties props = new Properties();
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		props.put(ProducerConfig.ACKS_CONFIG, "all");
+		props.put(ProducerConfig.RETRIES_CONFIG, 0);
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		//props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AdviceMessageSerializer.class.getName());
+		try {
+			producer = new KafkaProducer<String, AdviceMessage>(props);
+			ProducerCallback callback = new ProducerCallback();
+			ProducerRecord<String, AdviceMessage> data = new ProducerRecord<String, AdviceMessage>(TOPIC_NAME, "KEY", order);
 			producer.send(data, callback);
 		} catch (Exception exp) {
 			LOG.error(exp.getMessage());

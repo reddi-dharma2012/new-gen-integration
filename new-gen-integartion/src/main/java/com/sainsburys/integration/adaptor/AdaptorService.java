@@ -18,13 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Component;
 
-
+import com.sainsburys.integration.models.AdviceMessage;
 import com.sainsburys.integration.models.Order;
 import com.sainsburys.integration.adaptor.ReadOrderService;
 import com.sainsburys.integration.facade.PublisherService;
 
 @Component
-public class DirectoryWatcherService implements InitializingBean{
+public class AdaptorService implements InitializingBean{
 
 	@Autowired
 	public ReadOrderService readOrderService;
@@ -39,7 +39,7 @@ public class DirectoryWatcherService implements InitializingBean{
 	            @Override
 	            public void run() {
 	                System.out.println("Hello from scheduler");  
-	                pollFileServer();
+	                pollShipmentsFromFileServer();
 	            }
 		}, 0, 5, TimeUnit.SECONDS);
 	    }
@@ -72,6 +72,45 @@ public class DirectoryWatcherService implements InitializingBean{
 								.processFilesFromFileServer(directoryPath + "/" + event.context());
 						for (Order order : orders) {
 							service.postItemsToMessageBus(order);
+						}
+					}
+				}
+				key.reset();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void pollShipmentsFromFileServer() {
+		String directoryPath = "/Users/dharma.mittapalli/Documents/fileserver";
+		Path path = Paths.get(directoryPath);
+		WatchService watchService = null;
+		// Path path = Paths.get(System.getProperty("user.home"));
+		try {
+			watchService = FileSystems.getDefault().newWatchService();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
+					StandardWatchEventKinds.ENTRY_MODIFY);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			while ((key = watchService.take()) != null) {
+				for (WatchEvent<?> event : key.pollEvents()) {
+					System.out.println("Event" + event.kind() + ". File affected: " + event.context() + ".");
+				    System.out.println(StandardWatchEventKinds.ENTRY_CREATE);
+					if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
+						System.out.println("Event" + event.kind());
+						List<AdviceMessage> shipments = readOrderService
+								.processShipmentsFromFileServer(directoryPath + "/" + event.context());
+						for (AdviceMessage order : shipments) {
+							service.postShipmentsToMessageBus(order);
 						}
 					}
 				}
