@@ -1,13 +1,19 @@
 package com.sainsburys.integration.models;
 
 import java.io.Serializable;
-import java.sql.Date;
+//import java.sql.Date;
+import java.util.Date;
 
 import com.sainsburys.integration.utility.Mapping;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "shipments")
 public class AdviceMessage implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	@Id
 	private String shipmentId;
 	private String documentId;
 	private Date shipmentDate;

@@ -52,5 +52,5 @@ public class ReceiverConfig {
 
       return factory;
     }
-
+ 
 }
