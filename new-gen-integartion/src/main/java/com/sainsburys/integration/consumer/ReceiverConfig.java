@@ -12,7 +12,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 //import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
-
+import com.sainsburys.integration.models.AdviceMessage;
 import com.sainsburys.integration.models.Order;
 
 import java.util.HashMap;
@@ -39,18 +39,18 @@ public class ReceiverConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, Order> consumerFactory() {
+    public ConsumerFactory<String, AdviceMessage> consumerFactory() {
       return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
-          new JsonDeserializer<>(Order.class));
+          new JsonDeserializer<>(AdviceMessage.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Order> kafkaListenerContainerFactory() {
-      ConcurrentKafkaListenerContainerFactory<String, Order> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, AdviceMessage> kafkaListenerContainerFactory() {
+      ConcurrentKafkaListenerContainerFactory<String, AdviceMessage> factory =
           new ConcurrentKafkaListenerContainerFactory<>();
       factory.setConsumerFactory(consumerFactory());
 
       return factory;
     }
-
+ 
 }

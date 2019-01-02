@@ -1,4 +1,4 @@
-package com.sainsburys.integration.service;
+package com.sainsburys.integration.facade;
 
 import java.util.Properties;
 
@@ -12,13 +12,14 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sainsburys.integration.controllers.IntegrationController;
+import com.sainsburys.integration.models.AdviceMessage;
 import com.sainsburys.integration.models.Order;
+import com.sainsburys.integration.utility.AdviceMessageSerializer;
 import com.sainsburys.integration.utility.CustomSerializer;
 
 @Service
-public class MessageProducerService {
-	 private static final Logger LOG = LoggerFactory.getLogger(MessageProducerService.class);
+public class PublisherService {
+	 private static final Logger LOG = LoggerFactory.getLogger(PublisherService.class);
 	public final String TOPIC_NAME = "test";
 
 	public void postItemsToMessageBus(Order order) {
@@ -43,6 +44,28 @@ public class MessageProducerService {
 				producer.close();
 		}
 		
+	}
+	public void postShipmentsToMessageBus(AdviceMessage order) {
+		Producer<String, AdviceMessage> producer = null;
+		Properties props = new Properties();
+		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+		props.put(ProducerConfig.ACKS_CONFIG, "all");
+		props.put(ProducerConfig.RETRIES_CONFIG, 0);
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		//props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AdviceMessageSerializer.class.getName());
+		try {
+			producer = new KafkaProducer<String, AdviceMessage>(props);
+			ProducerCallback callback = new ProducerCallback();
+			ProducerRecord<String, AdviceMessage> data = new ProducerRecord<String, AdviceMessage>(TOPIC_NAME, "KEY", order);
+			producer.send(data, callback);
+		} catch (Exception exp) {
+			LOG.error(exp.getMessage());
+			System.out.println(exp.getMessage());
+		} finally {
+			if (producer != null)
+				producer.close();
+		}
 		
 	}
 }

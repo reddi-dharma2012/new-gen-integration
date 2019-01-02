@@ -1,0 +1,22 @@
+# how to start mongodb
+ mongod
+ ./mongod    from /usr/local/bin
+# how to connect mongodb
+  
+./mongo    from /usr/local/bin
+
+use JS_Schema
+
+db.shipments.insertOne(
+{
+"name" :"dharma",
+"company":"TCS",
+"client":"JS"
+}
+)
+Key : 5c295a24435ef5ab8e49c112
+
+# list all the records
+	db.shipments.find();
+# delete all the records
+	db.shipments.find();
